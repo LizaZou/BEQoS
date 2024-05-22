@@ -20,4 +20,5 @@ public class Client {
     public ArrayList<ResaPacket> getListResaClient(){
         return this.listResaClient;
     }
+
 }
