@@ -1,115 +1,215 @@
-/**
- * bandwidthbroker
- */
 import java.net.*;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.management.openmbean.ArrayType;
-
-public class Link {
-
-
+class Link {
     InetAddress source;
     InetAddress dest;
-    float InitialCapacity = 8000;
-    float CurrentBE = 0;
-    float CurrentVoix = 0;
-    float CurrentDT = 0;
-    float CurrentTR = 0;
-
-
+    float initialCapacity = 8000;
+    float currentBE = 0;
+    float currentVoix = 0;
+    float currentDT = 0;
+    float currentTR = 0;
 }
 
-public class ResaPacket {
-
+class ResaPacket {
     int id;
-    InetAddress IpDest;
-    InetAddress IpSource;
-    float Debit;
-    InetSocketAddress PortDest;
-    String Protocol;
-    String Class;
+    InetAddress ipDest;
+    InetAddress ipSource;
+    float debit;
+    InetSocketAddress portDest;
+    String protocol;
+    String trafficClass;
+
+    public ResaPacket(int id, InetAddress ipDest, InetAddress ipSource, float debit, InetSocketAddress portDest, String protocol, String trafficClass) {
+        this.id = id;
+        this.ipDest = ipDest;
+        this.ipSource = ipSource;
+        this.debit = debit;
+        this.portDest = portDest;
+        this.protocol = protocol;
+        this.trafficClass = trafficClass;
+    }
 }
 
-public class Client {
-
+class Client {
     int idClient;
-    List listResaClient = new ArrayList<ResaPacket>();  //differente resa d'un seul client
-} 
+    public ArrayList<ResaPacket> listResaClient;
 
-/*RESA(IPDEST, IPSOURCE, DEBIT, PORTDEST, PROTOCOL, Class)*/
-private static List listLink = new ArrayList<Link>();
-private static List listResaTotal = new ArrayList<ResaPacket>();
-//public link[] LinkArray;
-
-public class bandwidthbroker {
-
-    private float DebitDispoDT;
-    private float DebitDispoTR;
-    private float DebitDispoBE;
-    private float DebitDispoBK;
-    private float DebitTot = ResearchCurrentDebit() ;
-
-
-    private InetAddress Ref = InetAddress.getByName("0.0.0.0");
-
-    
-    void Accept(ResaPacket ResaPacket) {
-        //if (ResaPacket.IpDest.equals(LinkArray[i].dest) && ResaPacket.IpSource.equals(LinkArray[i].source)) {
-            //Ref = ResaPacket.IpDest;
-            float debit = ResaPacket.debit;
-            float debitTot = ResearchCurrentDebit();
-            if (debit+)
-        //}
-        
+    public Client(int idClient, ArrayList<ResaPacket> listResaClient) {
+        this.idClient = idClient;
+        this.listResaClient = new ArrayList<>(listResaClient);
     }
-
-    float ComputeDebitDT(){
-        float Debit =0 ; 
-        for (ResaPacket Resa:listResaTotal){
-            if(Resa.Class.equals("DT")){
-                Debit+=Resa.Debit ; 
-            }
-        }
-        return Debit; 
-    }
-
-    float ComputeDebitBE(){
-        float Debit =0 ; 
-        for (ResaPacket Resa:listResaTotal){
-            if(Resa.Class.equals("BE")){
-                Debit+=Resa.Debit ; 
-            }
-        }
-        return Debit ; 
-    }
-    float ComputeDebitBK(){
-        float Debit =0 ; 
-        for (ResaPacket Resa:listResaTotal){
-            if(Resa.Class.equals("BK")){
-                Debit+=Resa.Debit ; 
-            }
-        }
-        return Debit ; 
-    }
-    float ComputeDebitTR(){
-        float Debit =0 ; 
-        for (ResaPacket Resa:listResaTotal){
-            if(Resa.Class.equals("TR")){
-                Debit+=Resa.Debit ; 
-            }
-        }
-        return Debit ; 
-    }
-
-    float ResearchCurrentDebit() {
-        float DebitTot = 0;
-        for (ResaPacket Resa:listResaTotal) {
-            DebitTot+=Resa.Debit;
-        }
-
-        return DebitTot;
-    }
-
 }
 
+public class BandwidthBroker {
+    private float debitDispoDT;
+    private float debitDispoTR;
+    private float debitDispoBE;
+    private float debitDispoBK;
+    private float debitTot;
+    private float debitDispo = 8000;
+
+    private static List<Link> listLink = new ArrayList<>();
+    private static List<Client> listResaTotal = new ArrayList<>();
+
+    private InetAddress ref;
+
+    public BandwidthBroker() throws UnknownHostException {
+        this.ref = InetAddress.getByName("0.0.0.0");
+        this.debitTot = computeCurrentDebit();
+    }
+
+    void accept(ResaPacket resaPacket) {
+        float debit = resaPacket.debit;
+        float debitTot = this.computeCurrentDebit();
+        boolean pasRegle;
+
+        switch (resaPacket.trafficClass) {
+            case "TR":
+                if (resaPacket.debit + debitTot - computeDebitBE() >= debitDispo) {
+                    System.out.println("Reservation impossible, debit important");
+                } else {
+                    System.out.println("Reservation possible, reservation en cours");
+
+                    pasRegle = true;
+                    if (computeDebitBE() > 0) {
+                        while (pasRegle) {
+                            int nbClientBE = 0;
+                            for (Client cl : listResaTotal) {
+                                for (ResaPacket res : cl.listResaClient) {
+                                    if (res.trafficClass.equals("BE")) {
+                                        nbClientBE++;
+                                    }
+                                }
+                            }
+
+                            for (Client cl : listResaTotal) {
+                                for (ResaPacket res : cl.listResaClient) {
+                                    if (res.trafficClass.equals("BE")) {
+                                        res.debit -= debit / nbClientBE;
+                                    }
+                                }
+                            }
+                            pasRegle = false;
+                        }
+                    }
+
+                    List<ResaPacket> aux = new ArrayList<>();
+                    aux.add(resaPacket);
+                    listResaTotal.add(new Client(resaPacket.id, new ArrayList<>(aux)));
+                    actualiserBB();
+                    System.out.println("Reservation Fini!");
+                }
+                break;
+
+            case "DT":
+                if (resaPacket.debit + debitTot - computeDebitBE() >= debitDispo) {
+                    System.out.println("Reservation impossible, debit important");
+                } else {
+                    System.out.println("Reservation possible, reservation en cours");
+
+
+                    pasRegle = true;
+                    if (computeDebitBE() > 0) {
+                        while (pasRegle) {
+                            int nbClientBE = 0;
+                            for (Client cl : listResaTotal) {
+                                for (ResaPacket res : cl.listResaClient) {
+                                    if (res.trafficClass.equals("BE")) {
+                                        nbClientBE++;
+                                    }
+                                }
+                            }
+
+                            for (Client cl : listResaTotal) {
+                                for (ResaPacket res : cl.listResaClient) {
+                                    if (res.trafficClass.equals("BE")) {
+                                        res.debit -= debit / nbClientBE;
+                                    }
+                                }
+                            }
+                            pasRegle = false;
+                        }
+                    }
+                    actualiserBB();
+                    List<ResaPacket> aux = new ArrayList<>();
+                    aux.add(resaPacket);
+                    listResaTotal.add(new Client(resaPacket.id, new ArrayList<>(aux)));
+                    System.out.println("Reservation Fini!");
+                }
+                break;
+
+            case "BE":
+            case "BK":
+                // Handle BE and BK reservations as needed
+                break;
+        }
+    }
+
+    void actualiserBB() {
+        this.debitDispoDT = computeDebitDT();
+        this.debitDispoTR = computeDebitTR();
+        this.debitDispoBE = computeDebitBE();
+        this.debitDispoBK = computeDebitBK();
+        this.debitTot = computeCurrentDebit();
+    }
+
+    float computeDebitDT() {
+        float debit = 0;
+        for (Client client : listResaTotal) {
+            for (ResaPacket resa : client.listResaClient) {
+                if (resa.trafficClass.equals("DT")) {
+                    debit += resa.debit;
+                }
+            }
+        }
+        return debit;
+    }
+
+    float computeDebitBE() {
+        float debit = 0;
+        for (Client client : listResaTotal) {
+            for (ResaPacket resa : client.listResaClient) {
+                if (resa.trafficClass.equals("BE")) {
+                    debit += resa.debit;
+                }
+            }
+        }
+        return debit;
+    }
+
+    float computeDebitBK() {
+        float debit = 0;
+        for (Client client : listResaTotal) {
+            for (ResaPacket resa : client.listResaClient) {
+                if (resa.trafficClass.equals("BK")) {
+                    debit += resa.debit;
+                }
+            }
+        }
+        return debit;
+    }
+
+    float computeDebitTR() {
+        float debit = 0;
+        for (Client client : listResaTotal) {
+            for (ResaPacket resa : client.listResaClient) {
+                if (resa.trafficClass.equals("TR")) {
+                    debit += resa.debit;
+                }
+            }
+        }
+        return debit;
+    }
+
+    float computeCurrentDebit() {
+        float debitTot = 0;
+        for (Client client : listResaTotal) {
+            for (ResaPacket resa : client.listResaClient) {
+                debitTot += resa.debit;
+            }
+        }
+        return debitTot;
+    }
+}

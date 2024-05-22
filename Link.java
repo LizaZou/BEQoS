@@ -4,16 +4,15 @@ public class Link {
 
     private InetAddress source;
     private InetAddress dest;
-    private float initialCapacity = 8000;
+    private final float INITIALCAPACITY = 8000;
     private float currentBE;
     private float currentVoix;
     private float currentDT;
     private float currentBK;
 
-    public Link(InetAddress s, InetAddress d, float i){
+    public Link(InetAddress s, InetAddress d){
         this.source=s;
         this.dest=d;
-        this.initialCapacity=i;
         this.currentBE=0;
         this.currentDT=0;
         this.currentVoix=0;
