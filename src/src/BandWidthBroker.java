@@ -2,61 +2,29 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
-class Link {
-    InetAddress source;
-    InetAddress dest;
-    float initialCapacity = 8000;
-    float currentBE = 0;
-    float currentVoix = 0;
-    float currentDT = 0;
-    float currentTR = 0;
-}
 
-class ResaPacket {
-    int id;
-    InetAddress ipDest;
-    InetAddress ipSource;
-    float debit;
-    InetSocketAddress portDest;
-    String protocol;
-    String trafficClass;
-
-    public ResaPacket(int id, InetAddress ipDest, InetAddress ipSource, float debit, InetSocketAddress portDest, String protocol, String trafficClass) {
-        this.id = id;
-        this.ipDest = ipDest;
-        this.ipSource = ipSource;
-        this.debit = debit;
-        this.portDest = portDest;
-        this.protocol = protocol;
-        this.trafficClass = trafficClass;
-    }
-}
-
-class Client {
-    int idClient;
-    public ArrayList<ResaPacket> listResaClient;
-
-    public Client(int idClient, ArrayList<ResaPacket> listResaClient) {
-        this.idClient = idClient;
-        this.listResaClient = new ArrayList<>(listResaClient);
-    }
-}
-
-public class BandwidthBroker {
+public class BandWidthBroker {
     private float debitDispoDT;
     private float debitDispoTR;
     private float debitDispoBE;
     private float debitDispoBK;
     private float debitTot;
-    private float debitDispo = 8000;
+    private float debitDispo;
 
+    //Liste des liens qui relient chaque client à son CE
     private static List<Link> listLink = new ArrayList<>();
+
+    //Liste des réservations acceptées sur l'ensemble du réseau
     private static List<Client> listResaTotal = new ArrayList<>();
 
+
+    //???
     private InetAddress ref;
 
     public BandwidthBroker() throws UnknownHostException {
         this.ref = InetAddress.getByName("0.0.0.0");
+        //débit dispo au total en bits/s
+        this.debitDispo=8000;
         this.debitTot = computeCurrentDebit();
     }
 

@@ -47,6 +47,4 @@ public class ResaPacket {
     public String getClassTrafic(){
         return this.classTrafic;
     }
-
-
 }
