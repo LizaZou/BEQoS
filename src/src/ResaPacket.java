@@ -6,7 +6,7 @@ public class ResaPacket {
     private int idResa;
     private InetAddress ipDest;
     private InetAddress ipSource;
-    private float debitRequest;
+    public float debitRequest;
     private InetSocketAddress portDest;
     private String protocol;
     private String classTrafic;
