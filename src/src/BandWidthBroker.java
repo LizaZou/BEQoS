@@ -39,7 +39,7 @@ public class BandWidthBroker {
         float debitTot = this.computeCurrentDebit();
         boolean pasRegle;
 
-        switch (resaPacket.getClassTrafic()) {
+        switch (resaPacket.getClassTraffic()) {
             case "TR":
                 if ((resaPacket.getDebitRequest() + this.debitTot - computeDebitBE()) >= this.debitDispo) {
                     System.out.println("Reservation impossible, debit demandé trop important");
@@ -52,7 +52,7 @@ public class BandWidthBroker {
                             int nbClientBE = 0;
                             for (Client cl : this.listResaTotal) {
                                 for (ResaPacket res : cl.getListResaClient()) {
-                                    if (res.getClassTrafic().equals("BE")) {
+                                    if (res.getClassTraffic().equals("BE")) {
                                         nbClientBE++;
                                     }
                                 }
@@ -60,7 +60,7 @@ public class BandWidthBroker {
 
                             for (Client cl : listResaTotal) {
                                 for (ResaPacket res : cl.getListResaClient()) {
-                                    if (res.getClassTrafic().equals("BE")) {
+                                    if (res.getClassTraffic().equals("BE")) {
                                         float debitBE =res.getDebitRequest();
                                         debitBE -= debit / nbClientBE;
                                     }
@@ -91,7 +91,7 @@ public class BandWidthBroker {
                             int nbClientBE = 0;
                             for (Client cl : listResaTotal) {
                                 for (ResaPacket res : cl.getListResaClient()) {
-                                    if (res.getClassTrafic().equals("BE")) {
+                                    if (res.getClassTraffic().equals("BE")) {
                                         nbClientBE++;
                                     }
                                 }
@@ -99,7 +99,7 @@ public class BandWidthBroker {
 
                             for (Client cl : listResaTotal) {
                                 for (ResaPacket res : cl.getListResaClient()) {
-                                    if (res.getClassTrafic().equals("BE")) {
+                                    if (res.getClassTraffic().equals("BE")) {
                                         res.getDebitRequest() -= debit / nbClientBE;
                                     }
                                 }
@@ -134,7 +134,7 @@ public class BandWidthBroker {
         float debit = 0;
         for (Client client : listResaTotal) {
             for (ResaPacket resa : client.getListResaClient()) {
-                if (resa.getClassTrafic().equals("DT")) {
+                if (resa.getClassTraffic().equals("DT")) {
                     debit += resa.getDebitRequest();
                 }
             }
@@ -146,7 +146,7 @@ public class BandWidthBroker {
         float debit = 0;
         for (Client client : listResaTotal) {
             for (ResaPacket resa : client.getlistResaClient()) {
-                if (resa.getClassTrafic().equals("BE")) {
+                if (resa.getClassTraffic().equals("BE")) {
                     debit += resa.getDebitRequest();
                 }
             }
@@ -158,7 +158,7 @@ public class BandWidthBroker {
         float debit = 0;
         for (Client client : listResaTotal) {
             for (ResaPacket resa : client.getListResaClient()) {
-                if (resa.getClassTrafic().equals("BK")) {
+                if (resa.getClassTraffic().equals("BK")) {
                     debit += resa.getDebitRequest();
                 }
             }
@@ -170,7 +170,7 @@ public class BandWidthBroker {
         float debit = 0;
         for (Client client : listResaTotal) {
             for (ResaPacket resa : client.getListResaClient()) {
-                if (resa.getClassTrafic().equals("TR")) {
+                if (resa.getClassTraffic().equals("TR")) {
                     debit += resa.getDebitRequest();
                 }
             }

@@ -11,7 +11,7 @@ public class ResaPacket {
     private String protocol;
     private String classTrafic;
 
-    public ResaPacket(InetAddress ipD, InetAddress ipS, float debitRequest, InetSocketAddress port, String protocol, String classTrafic){
+    public ResaPacket(InetAddress ipD, InetAddress ipS, float debitRequest, InetSocketAddress port, String protocol, String classTraffic){
         this.ipDest=ipD;
         this.ipSource=ipS;
         this.debitRequest=debitRequest;
@@ -44,7 +44,7 @@ public class ResaPacket {
         return this.protocol;
     }
 
-    public String getClassTrafic(){
+    public String getClassTraffic(){
         return this.classTrafic;
     }
 }
