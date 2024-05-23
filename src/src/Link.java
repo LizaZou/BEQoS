@@ -35,4 +35,7 @@ public class Link {
         return this.currentBK;
     }
 
+    public float getCurrentCapa() {
+        return INITIALCAPACITY-getCurrentBE()-getCurrentBK()-getCurrentDT()-getCurrentVoix();
+    }
 }

@@ -14,6 +14,6 @@ public class ClosePacket {
         this.ipSource=ipS;
         this.portDest=port;
         this.protocol=protocol;
-        this.classTrafic=classTrafic;
+        this.classTrafic=classTraffic;
     }
 }

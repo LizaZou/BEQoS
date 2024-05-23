@@ -10,7 +10,7 @@ public class Client {
     public Client(int idClient, ArrayList<ResaPacket> listResaClient) {
         this.idClient = idClient;
         //differente resa d'un seul client
-        this.listResaClient = new ArrayList<>();
+        this.listResaClient = listResaClient;
     }
 
     public int getIdClient(){

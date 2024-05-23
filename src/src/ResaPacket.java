@@ -17,7 +17,7 @@ public class ResaPacket {
         this.debitRequest=debitRequest;
         this.portDest=port;
         this.protocol=protocol;
-        this.classTrafic=classTrafic;
+        this.classTrafic=classTraffic;
     }
 
     public int getIdResa(){

@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +71,9 @@ public class BandWidthBroker {
                         }
                     }
 
-                    List<ResaPacket> aux = new ArrayList<>();
+                    ArrayList<ResaPacket> aux = new ArrayList<>();
                     aux.add(resaPacket);
-                    this.listResaTotal.add(new Client(resaPacket.getIdResa(), new ArrayList<>(aux)));
+                    this.listResaTotal.add(new Client(resaPacket.getIdResa(), aux));
                     actualiserBB();
                     System.out.println("Reservation Fini!");
                 }
@@ -83,7 +84,7 @@ public class BandWidthBroker {
                     System.out.println("Reservation impossible, debit demandé trop important");
                 } else {
                     System.out.println("Reservation possible, reservation en cours");
-
+                    
                     pasRegle = true;
                     if (computeDebitBE() > 0) {
                         while (pasRegle) {
@@ -108,9 +109,10 @@ public class BandWidthBroker {
                         }
                     }
 
-                    List<ResaPacket> aux = new ArrayList<>();
+                    ArrayList<ResaPacket> aux = new ArrayList<>();
                     aux.add(resaPacket);
-                    this.listResaTotal.add(new Client(resaPacket.getIdResa(), new ArrayList<>(aux)));
+                    
+                    this.listResaTotal.add(new Client(resaPacket.getIdResa(), aux));
                     actualiserBB();
                     System.out.println("Reservation Fini!");
                 }
@@ -144,9 +146,9 @@ public class BandWidthBroker {
                         }
                     }
                     actualiserBB();
-                    List<ResaPacket> aux = new ArrayList<>();
+                    ArrayList<ResaPacket> aux = new ArrayList<>();
                     aux.add(resaPacket);
-                    listResaTotal.add(new Client(resaPacket.getIdResa(), new ArrayList<>(aux)));
+                    listResaTotal.add(new Client(resaPacket.getIdResa(), aux));
                     System.out.println("Reservation Fini!");
                 }
                 break;
@@ -162,13 +164,14 @@ public class BandWidthBroker {
                     }
                 }
              // Pour le best effort, avoir un nombre de co max ? Avoir un debit minimum ? 
-                if((computeCurrentDebit()<=debitTot) && (nbClientBE+1<= nb_max_be)){
+                if((computeCurrentDebit()<=debitDispo) && (nbClientBE+1<= nb_max_be)){
                     System.out.println("Reservation possible, en cours ...");
                     nbClientBE=0 ; 
-                    float be = debitTot-computeDebitBK()+computeDebitDT()+computeDebitTR() ; 
-                    List<ResaPacket> aux = new ArrayList<>();
+
+                    float be = debitDispo-computeDebitBK()-computeDebitDT()-computeDebitTR() ; 
+                    ArrayList<ResaPacket> aux = new ArrayList<>();
                     aux.add(resaPacket);
-                    listResaTotal.add(new Client(listResaTotal.size()+1, new ArrayList<>(aux)));
+                    listResaTotal.add(new Client(listResaTotal.size()+1, aux));
                     for (Client cl : listResaTotal) {
                         for (ResaPacket res : cl.getListResaClient()) {
                             if (res.getClassTraffic().equals("BE")) {
@@ -176,6 +179,7 @@ public class BandWidthBroker {
                             }
                         }
                     }
+                    System.out.println(nbClientBE);
                     for (Client cl : listResaTotal) {
                         for (ResaPacket res : cl.getListResaClient()) {
                             if (res.getClassTraffic().equals("BE")) {
@@ -255,6 +259,7 @@ public class BandWidthBroker {
         for (Client client : listResaTotal) {
             for (ResaPacket resa : client.getListResaClient()) {
                 if (resa.getClassTraffic().equals("BE")) {
+                    System.out.println(resa.getDebitRequest());
                     debit += resa.getDebitRequest();
                 }
             }
