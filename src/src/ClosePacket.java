@@ -9,7 +9,8 @@ public class ClosePacket {
     private String protocol;
     private String classTrafic;
 
-    public ClosePacket(InetAddress ipD, InetAddress ipS, float debitRequest, InetSocketAddress port, String protocol, String classTraffic){
+    public ClosePacket(int idR, InetAddress ipD, InetAddress ipS, float debitRequest, InetSocketAddress port, String protocol, String classTraffic){
+        this.idResa =idR;
         this.ipDest=ipD;
         this.ipSource=ipS;
         this.portDest=port;

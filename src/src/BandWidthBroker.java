@@ -213,26 +213,34 @@ public class BandWidthBroker {
     }
 
     void recep_close_packet(ClosePacket p){
+
+        int aux = 0;
         for (Client cl : listResaTotal) {
             for (ResaPacket res : cl.getListResaClient()) {
                 if (res.getIdResa() == p.idResa) {
-                    close_connection(p.idResa) ; 
+                    aux=p.idResa;
                 }
             }
         }
 
-
+        close_connection(aux);
     }
     void close_connection(int id ){
+        System.out.println("entered close connection");
+        Client aux = null;
         for (Client cl : listResaTotal) {
             for (ResaPacket res : cl.getListResaClient()) {
+                
                 if (res.getIdResa() == id) {
-                    this.listResaTotal.remove((id)) ; 
-                    actualiserBB();
+                    System.out.println("entered if of cloes connection");
+                    aux = cl;
+                    break;
+                    
                 }
             }
         }
-
+        this.listResaTotal.remove(aux);
+        actualiserBB();
     }
     void actualiserBB() {
         this.debitDispoDT = computeDebitDT();

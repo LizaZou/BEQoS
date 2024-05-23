@@ -8,24 +8,25 @@ public class test {
 
 
     public static void main(String[] args) throws UnknownHostException {
-        ResaPacket TestResaPacketTR = new ResaPacket(InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 500.0f, 
+        ResaPacket TestResaPacketTR = new ResaPacket(1, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 500.0f, 
                                                      InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "TR");
         
-        ResaPacket TestResaPacketTR2 = new ResaPacket(InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 700.0f, 
+        ResaPacket TestResaPacketTR2 = new ResaPacket(2, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 700.0f, 
                                                      InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "TR");
         
-        ResaPacket TestResaPacketTR3 = new ResaPacket(InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 7000.0f, 
+        ResaPacket TestResaPacketTR3 = new ResaPacket(3, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 7000.0f, 
                                                      InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "BE");
                                                 
-        ResaPacket TestResaPacketTR4 = new ResaPacket(InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 900.0f, 
+        ResaPacket TestResaPacketTR4 = new ResaPacket(4, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 900.0f, 
                                                      InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "BE");
 
-        ResaPacket TestResaPacketTR5 = new ResaPacket(InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 2000.0f, 
+        ResaPacket TestResaPacketTR5 = new ResaPacket(5, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 2000.0f, 
                                                      InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "TR");
 
-        ResaPacket TestResaPacketTR6 = new ResaPacket(InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 5000.0f, 
+        ResaPacket TestResaPacketTR6 = new ResaPacket(6, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 5000.0f, 
                                                      InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "TR");
 
+        ClosePacket ClosePacket3 = new ClosePacket(3, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 0, null, null, null);
         BandWidthBroker BBTest = new BandWidthBroker(8000);
         PrintDebits(BBTest);
 
@@ -42,16 +43,20 @@ public class test {
         PrintDebitsAttendus(8000f, 6800f, 1200f, 0, 0);
         PrintDebits(BBTest);
 
+        BBTest.recep_close_packet(ClosePacket3);
+        PrintDebitsAttendus(1200f, 0, 1200f, 0, 0);
+        PrintDebits(BBTest);
+
         BBTest.accept(TestResaPacketTR4);
-        PrintDebitsAttendus(8000f, 6800f, 1200f, 0, 0);
+        PrintDebitsAttendus(3400f, 2100f, 1200f, 0, 0);
         PrintDebits(BBTest);
 
         BBTest.accept(TestResaPacketTR5);
-        PrintDebitsAttendus(8000f, 4800f, 3200f, 0, 0);
+        PrintDebitsAttendus(5300f, 2100f, 3200f, 0, 0);
         PrintDebits(BBTest);
 
         BBTest.accept(TestResaPacketTR6);
-        PrintDebitsAttendus(8000f, 4800f, 3200f, 0, 0);
+        PrintDebitsAttendus(5300, 2100f, 3200f, 0, 0);
         PrintDebits(BBTest);
     }
 
