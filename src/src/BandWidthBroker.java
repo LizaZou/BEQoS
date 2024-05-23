@@ -11,7 +11,7 @@ public class BandWidthBroker {
     private float debitTot;
     private float debitDispo;
     private int nb_max_be = 5 ; 
-
+    public float min_debit_be = 2 ; // en ko
     //Liste des liens qui relient chaque client à son CE
     private List<Link> listLink;
 
@@ -122,7 +122,6 @@ public class BandWidthBroker {
                 } else {
                     System.out.println("Reservation possible, reservation en cours");
 
-
                     pasRegle = true;
                     if (computeDebitBE() > 0) {
                         while (pasRegle) {
@@ -134,7 +133,6 @@ public class BandWidthBroker {
                                     }
                                 }
                             }
-
                             for (Client cl : this.listResaTotal) {
                                 for (ResaPacket res : cl.getListResaClient()) {
                                     if (res.getClassTraffic().equals("BE")) {
@@ -154,11 +152,19 @@ public class BandWidthBroker {
                 break;
 
             case "BE":
-             // Pour le best effort, avoir un nombre de co max ? Avoir un debit minimum ? 
-                if(computeCurrentDebit()<=debitTot){
-                    System.out.println("Reservation possible, en cours ...");
 
-                    int nbClientBE = 0;
+                int nbClientBE=0 ; 
+                for (Client cl : listResaTotal) {
+                    for (ResaPacket res : cl.getListResaClient()) {
+                        if (res.getClassTraffic().equals("BE")) {
+                            nbClientBE++;
+                        }
+                    }
+                }
+             // Pour le best effort, avoir un nombre de co max ? Avoir un debit minimum ? 
+                if((computeCurrentDebit()<=debitTot) && (nbClientBE+1<= nb_max_be)){
+                    System.out.println("Reservation possible, en cours ...");
+                    nbClientBE=0 ; 
                     float be = debitTot-computeDebitBK()+computeDebitDT()+computeDebitTR() ; 
                     List<ResaPacket> aux = new ArrayList<>();
                     aux.add(resaPacket);
@@ -188,8 +194,42 @@ public class BandWidthBroker {
     }
             
     
-    
+    void delete_be(){
+        for (Client cl : listResaTotal) {
+            for (ResaPacket res : cl.getListResaClient()) {
+                if (res.getClassTraffic().equals("BE")) {
+                    if(res.debitRequest<min_debit_be){
+                        close_connection(res.getIdResa()) ; 
+                    }
+                    
+                }
+            }
+        }
 
+    }
+
+    void recep_close_packet(ClosePacket p){
+        for (Client cl : listResaTotal) {
+            for (ResaPacket res : cl.getListResaClient()) {
+                if (res.getIdResa() == p.idResa) {
+                    close_connection(p.idResa) ; 
+                }
+            }
+        }
+
+
+    }
+    void close_connection(int id ){
+        for (Client cl : listResaTotal) {
+            for (ResaPacket res : cl.getListResaClient()) {
+                if (res.getIdResa() == id) {
+                    this.listResaTotal.remove((id)) ; 
+                    actualiserBB();
+                }
+            }
+        }
+
+    }
     void actualiserBB() {
         this.debitDispoDT = computeDebitDT();
         this.debitDispoTR = computeDebitTR();
