@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.*;
 
 /**
@@ -7,24 +8,18 @@ import java.net.*;
 public class test {
 
 
-    public static void main(String[] args) throws UnknownHostException {
-        ResaPacket TestResaPacketTR = new ResaPacket(1, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 500.0f, 
-                                                     InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "TR");
+    public static void main(String[] args) throws IOException {
+        ResaPacket TestResaPacketTR = new ResaPacket(1, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 500.0f, 0, 0, null, "TR");
         
-        ResaPacket TestResaPacketTR2 = new ResaPacket(2, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 700.0f, 
-                                                     InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "TR");
+        ResaPacket TestResaPacketTR2 = new ResaPacket(2, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 700.0f, 0, 0, null, "TR");
         
-        ResaPacket TestResaPacketTR3 = new ResaPacket(3, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 7000.0f, 
-                                                     InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "BE");
+        ResaPacket TestResaPacketTR3 = new ResaPacket(3, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 7000.0f, 0,0, null, "BE");
                                                 
-        ResaPacket TestResaPacketTR4 = new ResaPacket(4, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 900.0f, 
-                                                     InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "BE");
+        ResaPacket TestResaPacketTR4 = new ResaPacket(4, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 900.0f, 0,0 , null, "BE");
 
-        ResaPacket TestResaPacketTR5 = new ResaPacket(5, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 2000.0f, 
-                                                     InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "TR");
+        ResaPacket TestResaPacketTR5 = new ResaPacket(5, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 2000.0f, 0,0, null, "TR");
 
-        ResaPacket TestResaPacketTR6 = new ResaPacket(6, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 5000.0f, 
-                                                     InetSocketAddress.createUnresolved("193.168.3.3", 9500), null, "TR");
+        ResaPacket TestResaPacketTR6 = new ResaPacket(6, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 5000.0f, 0, 0, null, "TR");
 
         ClosePacket ClosePacket3 = new ClosePacket(3, InetAddress.getByName("193.168.3.3"), InetAddress.getByName("193.168.1.1"), 0, null, null, null);
         BandWidthBroker BBTest = new BandWidthBroker(8000);
@@ -63,20 +58,14 @@ public class test {
     static void PrintDebits(BandWidthBroker BB) {
         System.out.println("--------- Valeurs de debit actuelles: ----------- \n");
         System.out.println("Debit Tot actuel: " + BB.computeCurrentDebit() + "\n");
-        System.out.println("Debit BE: " + BB.computeDebitBE() + "\n");
         System.out.println("Debit TR: " + BB.computeDebitTR() + "\n");
-        System.out.println("Debit BK: " + BB.computeDebitBK() + "\n");
-        System.out.println("Dbeit DT: " + BB.computeDebitDT() + "\n");
         System.out.println("\n");
     } 
 
     static void PrintDebitsAttendus(float Tot, float BE, float TR, float BK, float DT) {
         System.out.println("------- Valeurs de debit attendues au prochain print: --------- \n");
         System.out.println("Debit Tot attendu: " + Tot + "\n");
-        System.out.println("Debit BE: " + BE + "\n");
         System.out.println("Debit TR: " + TR + "\n");
-        System.out.println("Debit BK: " + BK + "\n");
-        System.out.println("Dbeit DT: " + DT + "\n");
     } 
  
 }

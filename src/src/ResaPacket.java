@@ -7,16 +7,18 @@ public class ResaPacket {
     private InetAddress ipDest;
     private InetAddress ipSource;
     public float debitRequest;
-    private InetSocketAddress portDest;
+    private int portDest;
+    private int portSource;
     private String protocol;
     private String classTrafic;
 
-    public ResaPacket(int idR, InetAddress ipD, InetAddress ipS, float debitRequest, InetSocketAddress port, String protocol, String classTraffic){
+    public ResaPacket(int idR, InetAddress ipD, InetAddress ipS, float debitRequest, int portDest, int portsrouce, String protocol, String classTraffic){
         this.idResa = idR;
         this.ipDest=ipD;
         this.ipSource=ipS;
         this.debitRequest=debitRequest;
-        this.portDest=port;
+        this.portDest=portDest;
+        this.portSource=portsrouce;
         this.protocol=protocol;
         this.classTrafic=classTraffic;
     }
@@ -37,7 +39,7 @@ public class ResaPacket {
         return this.debitRequest;
     }
 
-    public InetSocketAddress getPortDest(){
+    public int getPortDest(){
         return this.portDest;
     }
 
@@ -47,5 +49,9 @@ public class ResaPacket {
 
     public String getClassTraffic(){
         return this.classTrafic;
+    }
+
+    public int getPortSource() {
+        return this.portSource;
     }
 }
